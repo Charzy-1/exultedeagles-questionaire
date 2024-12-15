@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 const Home = () => {
   return (
-    <section className="bg-yellow-500 flex flex-col min-h-screen text-center space-y-4 justify-center items-center">
+    <section className="bg-yellow-500 flex flex-col min-h-screen text-center space-y-2 justify-center items-center">
       {/* Exulted logo image */}
       <div className="w-300 h-200 w-[300px] h-[200px]mb-4">
         <Image
@@ -14,10 +14,10 @@ const Home = () => {
           // objectFit="cover"
         />
       </div>
-      <h1 className="text-3xl lg:text-4xl font-bold">
+      <h1 className="text-2xl lg:text-4xl p-3 font-bold">
         Welcome to Our Feedback Portal
       </h1>
-      <p className="text-lg text-gray-600">
+      <p className="text-lg text-gray-600 p-3">
         Your feedback helps us improve our solar products and services.
       </p>
       <Link href="/questionnaire">

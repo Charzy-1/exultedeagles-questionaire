@@ -27,7 +27,7 @@ const page = () => {
   };
 
   return (
-    <form className="space-y-4" onSubmit={handleSubmit}>
+    <form className="space-y-4 p-8 lg:p-16 mt-14" onSubmit={handleSubmit}>
       {questions.map((question) => (
         <div key={question.id}>
           <label className="block text-lg font-medium">{question.text}</label>

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -24,10 +25,12 @@ export default function Navbar() {
 
         {/* Hamburger icon for small screens */}
         <div className="lg:hidden" onClick={toggleMenu}>
-          <img
-            src="/icons/hamburger.svg" // Path to your hamburger icon in the public/icons folder
+          <Image
+            src="/icons/hamburger.svg"
             alt="Hamburger Icon"
-            className="w-6 h-6 cursor-pointer"
+            width={24} // Specify the width in pixels
+            height={24} // Specify the height in pixels
+            className="cursor-pointer"
           />
         </div>
 
