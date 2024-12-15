@@ -14,7 +14,9 @@ const Home = () => {
           // objectFit="cover"
         />
       </div>
-      <h1 className="text-4xl font-bold">Welcome to Our Feedback Portal</h1>
+      <h1 className="text-3xl lg:text-4xl font-bold">
+        Welcome to Our Feedback Portal
+      </h1>
       <p className="text-lg text-gray-600">
         Your feedback helps us improve our solar products and services.
       </p>
