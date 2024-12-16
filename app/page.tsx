@@ -14,14 +14,14 @@ const Home = () => {
           // objectFit="cover"
         />
       </div>
-      <h1 className="text-2xl lg:text-4xl p-3 font-bold">
-        Welcome to Our Feedback Portal
-      </h1>
+      <h2 className="text-2xl lg:text-4xl lg:max-w-4xl p-3 font-bold">
+        Welcome to Exulted Eagles's Customer satisfaction survery portal
+      </h2>
       <p className="text-lg text-gray-600 p-3">
         Your feedback helps us improve our solar products and services.
       </p>
       <Link href="/questionnaire">
-        <button className="bg-gradient-to-r from-red-400 to-red-800 text-white px-4 font-bold py-3 rounded hover:bg-black shadow-xl">
+        <button className="bg-gradient-to-r from-red-400 to-red-800 text-white px-4 font-bold py-3 rounded hover:bg-black hover:bg-none shadow-xl">
           Start Questionnaire
         </button>
       </Link>
