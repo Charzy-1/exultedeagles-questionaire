@@ -1,5 +1,5 @@
 export const questions = [
-  { id: 1, text: "What branch is your survey for?", type: "text" },
+  { id: 1, text: "What branch is your survey from?", type: "text" },
   {
     id: 2,
     text: "Was the feedback on product knowledge, quotation and overall sales within the hour?",
@@ -8,7 +8,7 @@ export const questions = [
   },
   {
     id: 3,
-    text: "We are delighted to hear yourexperience was great. Which aspect of our service stood out the most to you? (Select all that apply)",
+    text: "We are delighted to hear your experience was great. Which aspect of our service stood out the most to you? (Select all that apply)",
     type: "checkbox",
     options: [
       "Timeliness of service",
@@ -20,6 +20,7 @@ export const questions = [
       "Good communication skill",
       "Short queying time",
       "Issues solved effectively",
+      "Other (please specify)",
     ],
   },
   {
