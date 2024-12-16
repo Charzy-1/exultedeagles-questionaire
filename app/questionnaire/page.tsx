@@ -15,7 +15,19 @@ const Page = () => {
   const router = useRouter();
 
   const handleChange = (id: number, value: string) => {
-    setResponses({ ...responses, [id]: value });
+    // For the first question (id: 1), validate that only English alphabets are allowed
+    if (id === 1) {
+      // Regex to allow only letters (both lowercase and uppercase)
+      const regex = /^[A-Za-z\s]*$/;
+
+      // Only update if value matches the regex
+      if (regex.test(value) || value === "") {
+        setResponses({ ...responses, [id]: value });
+      }
+    } else {
+      // For other questions, update the responses without additional validation
+      setResponses({ ...responses, [id]: value });
+    }
   };
 
   const handleCheckboxChange = (id: number, option: string) => {
