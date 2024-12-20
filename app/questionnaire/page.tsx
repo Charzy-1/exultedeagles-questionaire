@@ -1,31 +1,26 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+
 import { questions } from "@/constants/questions";
 
-// Define the type for responses state
 type Responses = Record<number, string[] | string | undefined>;
 
 const Page = () => {
-  const [responses, setResponses] = useState<Responses>({}); // Add typing to responses state
+  const [responses, setResponses] = useState<Responses>({});
   const [otherResponses, setOtherResponses] = useState<Record<number, string>>(
     {}
   );
   const router = useRouter();
 
   const handleChange = (id: number, value: string) => {
-    // For the first question (id: 1), validate that only English alphabets are allowed
     if (id === 1) {
-      // Regex to allow only letters (both lowercase and uppercase)
       const regex = /^[A-Za-z\s]*$/;
-
-      // Only update if value matches the regex
       if (regex.test(value) || value === "") {
         setResponses({ ...responses, [id]: value });
       }
     } else {
-      // For other questions, update the responses without additional validation
       setResponses({ ...responses, [id]: value });
     }
   };
@@ -49,36 +44,42 @@ const Page = () => {
     setOtherResponses({ ...otherResponses, [id]: value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const finalResponses = { ...responses };
 
-    Object.keys(otherResponses).forEach((id) => {
-      if (responses[parseInt(id)]?.includes("Other (please specify)")) {
-        finalResponses[parseInt(id)] = [
-          ...responses[parseInt(id)].filter(
-            (option) => option !== "Other (please specify)"
-          ),
-          `Other: ${otherResponses[parseInt(id)]}`,
-        ];
-      }
-    });
+    // Add any additional logic to handle "Other" responses, if needed.
 
-    console.log(finalResponses); // Replace with API call
-    router.push("/thank-you");
+    try {
+      const response = await fetch("/api/responses", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(finalResponses),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to submit the form");
+      }
+
+      // Redirect after successful submission
+      router.push("/thank-you");
+    } catch (error) {
+      console.error("Error submitting the form:", error);
+    }
   };
 
-  // Check if all questions have been answered
   const isFormValid = questions.every((question) => {
     const response = responses[question.id];
     if (question.type === "checkbox") {
-      return Array.isArray(response) && response.length > 0; // For checkboxes, ensure at least one option is selected
+      return Array.isArray(response) && response.length > 0;
     }
     return response && response !== "";
   });
 
   return (
-    <form className="space-y-4 p-8 lg:p-16 mt-14" onSubmit={handleSubmit}>
+    <form className="mt-14 space-y-4 p-8 lg:p-16" onSubmit={handleSubmit}>
       {questions.map((question) => (
         <div key={question.id}>
           <label className="block text-lg font-medium">{question.text}</label>
@@ -86,7 +87,7 @@ const Page = () => {
           {question.type === "text" && (
             <input
               type="text"
-              className="w-full border-b-2 border-gray-400 outline-none hover:border-black p-2 rounded"
+              className="w-full rounded border-b-2 border-gray-400 p-2 outline-none hover:border-black"
               onChange={(e) => handleChange(question.id, e.target.value)}
             />
           )}
@@ -119,19 +120,17 @@ const Page = () => {
                       responses[question.id]?.includes(
                         "Other (please specify)"
                       ) && option !== "Other (please specify)"
-                    } // Disable other options if "Other" is selected
+                    }
                     onChange={() => handleCheckboxChange(question.id, option)}
                   />
                   <span>{option}</span>
                 </label>
               ))}
-
-              {/* Text box for "Other (please specify)" */}
               {responses[question.id]?.includes("Other (please specify)") && (
                 <input
                   type="text"
                   placeholder="Please specify"
-                  className="w-full border p-2 rounded mt-2"
+                  className="mt-2 w-full rounded border p-2"
                   onChange={(e) =>
                     handleOtherChange(question.id, e.target.value)
                   }
@@ -144,12 +143,12 @@ const Page = () => {
 
       <button
         type="submit"
-        disabled={!isFormValid} // Disable button if form is invalid
+        disabled={!isFormValid}
         className={`${
           !isFormValid
-            ? "bg-gray-400 cursor-not-allowed"
+            ? "cursor-not-allowed bg-gray-400"
             : "bg-gradient-to-r from-red-400 to-red-800"
-        } text-white px-4 font-bold py-3 rounded hover:bg-yellow-400 hover:text-black hover:bg-none shadow-xl mt-6`}
+        } mt-6 rounded px-4 py-3 font-bold text-white shadow-xl hover:bg-yellow-400 hover:bg-none hover:text-black`}
       >
         Submit
       </button>
