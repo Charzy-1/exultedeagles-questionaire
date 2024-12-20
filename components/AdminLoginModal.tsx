@@ -31,7 +31,7 @@ const AdminLoginModal: React.FC<AdminLoginModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-500 bg-opacity-50">
+    <div className=" fixed inset-0 z-50 flex items-center justify-center">
       <div className="w-80 rounded bg-white p-8 shadow-lg">
         <h2 className="mb-4 text-center text-2xl font-bold">Admin Login</h2>
         {error && <p className="mb-2 text-center text-red-600">{error}</p>}

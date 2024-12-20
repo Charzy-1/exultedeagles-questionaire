@@ -15,7 +15,7 @@ const Home = () => {
         />
       </div>
       <h2 className="p-3 text-2xl font-bold lg:max-w-4xl lg:text-4xl">
-        Welcome to Exulted Eagles's Customer satisfaction survery portal
+        Welcome to Exulted Eagles Customer satisfaction survery portal
       </h2>
       <p className="p-3 text-lg text-gray-600">
         Your feedback helps us improve our solar products and services.
