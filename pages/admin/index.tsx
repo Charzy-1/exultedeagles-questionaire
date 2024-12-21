@@ -2,6 +2,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 
 import AdminLoginModal from "@/components/AdminLoginModal";
+import DeleteConfirmationModal from "@/components/DeleteConfirmationModal"; // Import the modal
 import Navbar from "@/components/Navbar";
 
 const AdminPage = () => {
@@ -10,6 +11,8 @@ const AdminPage = () => {
   const [error, setError] = useState("");
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [selectedRowIndex, setSelectedRowIndex] = useState(null); // Track selected row
+  const [isModalVisible, setIsModalVisible] = useState(false); // Track modal visibility
+  const [responseToDelete, setResponseToDelete] = useState(null); // Track the response to delete
 
   useEffect(() => {
     const checkLogin = () => {
@@ -70,6 +73,36 @@ const AdminPage = () => {
     setSelectedRowIndex(index); // Select or unselect the row
   };
 
+  const handleDeleteClick = (response) => {
+    setResponseToDelete(response); // Set the response to delete
+    setIsModalVisible(true); // Show the modal
+  };
+
+  const handleDeleteConfirm = async () => {
+    try {
+      // Remove from UI first
+      setResponses(
+        responses.filter((response) => response !== responseToDelete)
+      );
+
+      // Call the API to delete from the database
+      const res = await fetch(`/api/admin/${responseToDelete._id}`, {
+        method: "DELETE",
+      });
+      if (!res.ok) {
+        throw new Error("Failed to delete response");
+      }
+
+      setIsModalVisible(false); // Hide the modal after successful deletion
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  const handleModalClose = () => {
+    setIsModalVisible(false); // Close the modal without deleting
+  };
+
   if (!isLoggedIn) {
     return (
       <AdminLoginModal
@@ -124,7 +157,13 @@ const AdminPage = () => {
                     <td className="px-4 py-2 text-gray-800">{response[4]}</td>
                     <td className="px-4 py-2 text-gray-800">
                       {selectedRowIndex === index && (
-                        <button className="rounded p-1 hover:bg-gray-300">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation(); // Prevent row click event from firing
+                            handleDeleteClick(response);
+                          }}
+                          className="rounded p-1 hover:bg-gray-300"
+                        >
                           <Image
                             src="/images/trash-bin.png"
                             alt="Delete"
@@ -149,6 +188,13 @@ const AdminPage = () => {
           Logout
         </button>
       </div>
+
+      {/* Modal */}
+      <DeleteConfirmationModal
+        isVisible={isModalVisible}
+        onClose={handleModalClose}
+        onDelete={handleDeleteConfirm}
+      />
     </div>
   );
 };
