@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { useEffect, useState } from "react";
 
 import AdminLoginModal from "@/components/AdminLoginModal";
@@ -8,6 +9,7 @@ const AdminPage = () => {
   const [responses, setResponses] = useState([]);
   const [error, setError] = useState("");
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [selectedRowIndex, setSelectedRowIndex] = useState(null); // Track selected row
 
   useEffect(() => {
     const checkLogin = () => {
@@ -22,6 +24,23 @@ const AdminPage = () => {
 
     checkLogin();
   }, []);
+
+  useEffect(() => {
+    const handleOutsideClick = (e) => {
+      const table = document.querySelector("table");
+      if (table && !table.contains(e.target)) {
+        setSelectedRowIndex(null); // Deselect row when clicking outside
+      }
+    };
+
+    if (selectedRowIndex !== null) {
+      window.addEventListener("click", handleOutsideClick);
+    }
+
+    return () => {
+      window.removeEventListener("click", handleOutsideClick);
+    };
+  }, [selectedRowIndex]);
 
   const fetchResponses = async () => {
     try {
@@ -47,6 +66,10 @@ const AdminPage = () => {
     setShowLoginModal(true); // Show login modal again
   };
 
+  const handleRowClick = (index) => {
+    setSelectedRowIndex(index); // Select or unselect the row
+  };
+
   if (!isLoggedIn) {
     return (
       <AdminLoginModal
@@ -57,14 +80,13 @@ const AdminPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 px-10 py-32">
+    <div className="min-h-screen bg-gray-100 px-10 py-32 lg:px-80">
       <Navbar />
       <h1 className="mb-6 text-center text-3xl font-bold text-gray-800">
         Admin Dashboard
       </h1>
       {error && <p className="text-center text-red-600">{error}</p>}
       <div className="mx-auto max-w-4xl">
-        {/* Add horizontal scrolling for the table */}
         <div className="overflow-x-auto">
           <div className="rounded-lg bg-white shadow-lg">
             <table className="w-full table-auto border-collapse">
@@ -79,11 +101,18 @@ const AdminPage = () => {
                     Outstanding Services
                   </th>
                   <th className="px-4 py-2 text-left text-gray-800">Rate</th>
+                  <th className="px-4 py-2 text-left text-gray-800">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {responses.map((response, index) => (
-                  <tr key={index} className="border-b">
+                  <tr
+                    key={index}
+                    className={`border-b ${
+                      selectedRowIndex === index ? "bg-gray-200" : ""
+                    }`}
+                    onClick={() => handleRowClick(index)}
+                  >
                     <td className="px-4 py-2 text-gray-800">{index + 1}</td>
                     <td className="px-4 py-2 text-gray-800">{response[1]}</td>
                     <td className="px-4 py-2 text-gray-800">{response[2]}</td>
@@ -93,6 +122,18 @@ const AdminPage = () => {
                         : response[3]}
                     </td>
                     <td className="px-4 py-2 text-gray-800">{response[4]}</td>
+                    <td className="px-4 py-2 text-gray-800">
+                      {selectedRowIndex === index && (
+                        <button className="rounded p-1 hover:bg-gray-300">
+                          <Image
+                            src="/images/trash-bin.png"
+                            alt="Delete"
+                            width={20}
+                            height={20}
+                          />
+                        </button>
+                      )}
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -100,8 +141,7 @@ const AdminPage = () => {
           </div>
         </div>
       </div>
-      {/* Make logout button responsive */}
-      <div className="mt-6 flex justify-center">
+      <div className="mt-6 flex justify-end">
         <button
           onClick={handleLogout}
           className="rounded bg-red-500 px-4 py-2 text-white hover:bg-red-600"
