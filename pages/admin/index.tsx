@@ -80,22 +80,24 @@ const AdminPage = () => {
 
   const handleDeleteConfirm = async () => {
     try {
-      // Remove from UI first
-      setResponses(
-        responses.filter((response) => response !== responseToDelete)
-      );
-
       // Call the API to delete from the database
       const res = await fetch(`/api/admin/${responseToDelete._id}`, {
         method: "DELETE",
       });
+
       if (!res.ok) {
         throw new Error("Failed to delete response");
       }
 
-      setIsModalVisible(false); // Hide the modal after successful deletion
+      // Remove from UI after successful delete
+      setResponses(
+        responses.filter((response) => response._id !== responseToDelete._id)
+      );
+
+      // Close the modal after successful deletion
+      setIsModalVisible(false);
     } catch (err) {
-      setError(err.message);
+      setError(err.message); // Handle error
     }
   };
 

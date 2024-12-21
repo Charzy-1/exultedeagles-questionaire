@@ -46,9 +46,17 @@ const Page = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const finalResponses = { ...responses };
 
-    // Add any additional logic to handle "Other" responses, if needed.
+    // Include "Other" responses in the final responses
+    const finalResponses = { ...responses };
+    Object.keys(otherResponses).forEach((id) => {
+      if (responses[Number(id)]?.includes("Other (please specify)")) {
+        finalResponses[Number(id)] = [
+          ...((responses[Number(id)] as string[]) || []),
+          otherResponses[Number(id)],
+        ];
+      }
+    });
 
     try {
       const response = await fetch("/api/responses", {
@@ -56,7 +64,7 @@ const Page = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(finalResponses),
+        body: JSON.stringify(finalResponses), // Send the final responses directly
       });
 
       if (!response.ok) {
@@ -144,11 +152,7 @@ const Page = () => {
       <button
         type="submit"
         disabled={!isFormValid}
-        className={`${
-          !isFormValid
-            ? "cursor-not-allowed bg-gray-400"
-            : "bg-gradient-to-r from-red-400 to-red-800"
-        } mt-6 rounded px-4 py-3 font-bold text-white shadow-xl hover:bg-yellow-400 hover:bg-none hover:text-black`}
+        className={`${!isFormValid ? "cursor-not-allowed bg-gray-400" : "bg-gradient-to-r from-red-400 to-red-800"} mt-6 rounded px-4 py-3 font-bold text-white shadow-xl hover:bg-yellow-400 hover:bg-none hover:text-black`}
       >
         Submit
       </button>
