@@ -6,7 +6,7 @@ const DeleteConfirmationModal = ({ onClose, onDelete, isVisible }) => {
   if (!isVisible) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-6">
       <div className="w-96 rounded-lg bg-white p-6 shadow-lg">
         <h2 className="mb-4 text-xl font-bold text-gray-800">
           Confirm Deletion
