@@ -26,7 +26,10 @@ const Page = () => {
   };
 
   const handleCheckboxChange = (id: number, option: string) => {
-    const currentSelections = responses[id] || [];
+    const currentSelections = Array.isArray(responses[id])
+      ? (responses[id] as string[])
+      : [];
+
     if (option === "Other (please specify)") {
       const updatedSelections = currentSelections.includes(option)
         ? []
