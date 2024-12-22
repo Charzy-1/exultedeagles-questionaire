@@ -8,6 +8,8 @@ import Navbar from "@/components/Navbar";
 const AdminPage = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [responses, setResponses] = useState([]);
+  const [filteredResponses, setFilteredResponses] = useState([]); // State for filtered responses
+  const [searchQuery, setSearchQuery] = useState(""); // Search query state
   const [error, setError] = useState("");
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [selectedRowIndex, setSelectedRowIndex] = useState(null); // Track selected row
@@ -53,6 +55,7 @@ const AdminPage = () => {
       }
       const data = await res.json();
       setResponses(data);
+      setFilteredResponses(data); // Initialize filtered responses
     } catch (err) {
       setError(err.message);
     }
@@ -93,6 +96,11 @@ const AdminPage = () => {
       setResponses(
         responses.filter((response) => response._id !== responseToDelete._id)
       );
+      setFilteredResponses(
+        filteredResponses.filter(
+          (response) => response._id !== responseToDelete._id
+        )
+      );
 
       // Close the modal after successful deletion
       setIsModalVisible(false);
@@ -103,6 +111,20 @@ const AdminPage = () => {
 
   const handleModalClose = () => {
     setIsModalVisible(false); // Close the modal without deleting
+  };
+
+  const handleSearch = (e) => {
+    const query = e.target.value.toLowerCase();
+    setSearchQuery(query);
+
+    if (query === "") {
+      setFilteredResponses(responses); // Reset to all responses if search is cleared
+    } else {
+      const filtered = responses.filter(
+        (response) => response[1].toLowerCase().includes(query) // Filter by branch name (assumes branch is at index 1)
+      );
+      setFilteredResponses(filtered);
+    }
   };
 
   if (!isLoggedIn) {
@@ -121,13 +143,41 @@ const AdminPage = () => {
         Admin Dashboard
       </h1>
       {error && <p className="text-center text-red-600">{error}</p>}
+
+      {/* Search Form */}
+      <div className="mb-4 flex justify-center">
+        <div className="relative w-full max-w-md">
+          <span className="absolute inset-y-0 left-3 flex items-center text-gray-400">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="size-5"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fillRule="evenodd"
+                d="M8 2a6 6 0 100 12A6 6 0 008 2zM2 8a8 8 0 1114.32 5.906l4.387 4.387a1 1 0 01-1.414 1.414l-4.387-4.387A8 8 0 012 8z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </span>
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={handleSearch}
+            placeholder="Search by branch name"
+            className="w-full rounded-full border-2 border-gray-300 px-10 py-2 text-gray-800 focus:border-gray-800 focus:outline-none"
+          />
+        </div>
+      </div>
+
       <div className="mx-auto max-w-4xl">
         <div className="overflow-x-auto">
           <div className="rounded-lg bg-white shadow-lg">
             <table className="w-full table-auto border-collapse">
               <thead>
                 <tr className="bg-gray-300">
-                  <th className="px-4 py-2 text-left text-gray-800">#</th>
+                  <th className="px-4 py-2 text-left text-gray-800">S/n</th>
                   <th className="px-4 py-2 text-left text-gray-800">Branch</th>
                   <th className="px-4 py-2 text-left text-gray-800">
                     Overall sales feedback
@@ -140,7 +190,7 @@ const AdminPage = () => {
                 </tr>
               </thead>
               <tbody>
-                {responses.map((response, index) => (
+                {filteredResponses.map((response, index) => (
                   <tr
                     key={index}
                     className={`border-b ${
