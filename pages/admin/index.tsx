@@ -6,12 +6,14 @@ import DeleteConfirmationModal from "@/components/DeleteConfirmationModal"; // I
 import Navbar from "@/components/Navbar";
 
 const AdminPage = () => {
+  // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
+  const [showLoginModal, setShowLoginModal] = useState(false);
+
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [responses, setResponses] = useState([]);
   const [filteredResponses, setFilteredResponses] = useState([]); // State for filtered responses
   const [searchQuery, setSearchQuery] = useState(""); // Search query state
   const [error, setError] = useState("");
-  const [showLoginModal, setShowLoginModal] = useState(false);
   const [selectedRowIndex, setSelectedRowIndex] = useState(null); // Track selected row
   const [isModalVisible, setIsModalVisible] = useState(false); // Track modal visibility
   const [responseToDelete, setResponseToDelete] = useState(null); // Track the response to delete
@@ -31,9 +33,9 @@ const AdminPage = () => {
   }, []);
 
   useEffect(() => {
-    const handleOutsideClick = (e) => {
+    const handleOutsideClick = (e: MouseEvent) => {
       const table = document.querySelector("table");
-      if (table && !table.contains(e.target)) {
+      if (table && !table.contains(e.target as Node)) {
         setSelectedRowIndex(null); // Deselect row when clicking outside
       }
     };
@@ -56,8 +58,12 @@ const AdminPage = () => {
       const data = await res.json();
       setResponses(data);
       setFilteredResponses(data); // Initialize filtered responses
-    } catch (err) {
-      setError(err.message);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message); // Safely access err.message
+      } else {
+        setError("An unknown error occurred");
+      }
     }
   };
 
@@ -72,7 +78,7 @@ const AdminPage = () => {
     setShowLoginModal(true); // Show login modal again
   };
 
-  const handleRowClick = (index) => {
+  const handleRowClick = (index: number) => {
     setSelectedRowIndex(index); // Select or unselect the row
   };
 

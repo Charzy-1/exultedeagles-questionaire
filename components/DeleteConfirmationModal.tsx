@@ -1,8 +1,18 @@
-// components/DeleteConfirmationModal.js
+// components/DeleteConfirmationModal.tsx
 
 import React from "react";
 
-const DeleteConfirmationModal = ({ onClose, onDelete, isVisible }) => {
+type DeleteConfirmationModalProps = {
+  onClose: () => void; // Function type for the onClose handler
+  onDelete: () => void; // Function type for the onDelete handler
+  isVisible: boolean; // Boolean type for visibility
+};
+
+const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
+  onClose,
+  onDelete,
+  isVisible,
+}) => {
   if (!isVisible) return null;
 
   return (
