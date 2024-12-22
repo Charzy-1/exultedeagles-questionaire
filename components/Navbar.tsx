@@ -1,8 +1,8 @@
 "use client"; // Mark the file as a client component
 
-import { useState } from "react";
-import Link from "next/link";
-import Image from "next/image";
+import Image from "next/image"; // Then import next/image
+import Link from "next/link"; // First import next/link
+import { useState } from "react"; // Then import react
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -14,11 +14,11 @@ export default function Navbar() {
   const closeMenu = () => setIsMenuOpen(false);
 
   return (
-    <header className="bg-red-500 text-white p-4 px-8 lg:px-16 shadow-xl fixed top-0 left-0 w-full z-10">
+    <header className="fixed left-0 top-0 z-10 w-full bg-red-500 p-4 px-8 text-white shadow-xl lg:px-16">
       <nav className="flex justify-between lg:text-xl">
         {/* Logo */}
         <Link href="/">
-          <h1 className="text-lg lg:text-2xl font-bold cursor-pointer">
+          <h1 className="cursor-pointer text-lg font-bold lg:text-2xl">
             Exulted Eagles
           </h1>
         </Link>
@@ -35,7 +35,7 @@ export default function Navbar() {
         </div>
 
         {/* Desktop Navigation: Hidden on small screens */}
-        <ul className="hidden lg:flex space-x-6">
+        <ul className="hidden space-x-6 lg:flex">
           <li>
             <Link
               href="/"
@@ -59,17 +59,17 @@ export default function Navbar() {
 
       {/* Mobile slider menu */}
       <div
-        className={`fixed top-0 left-0 bg-red-500 text-white w-64 h-full transition-transform duration-300 ${
-          isMenuOpen ? "transform translate-x-0" : "transform -translate-x-full"
+        className={`fixed left-0 top-0 h-full w-64 bg-red-500 text-white transition-transform duration-300 ${
+          isMenuOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
         <div className="flex justify-between p-4">
-          <h1 className="text-lg lg:text-2xl font-bold">Exulted Eagles</h1>
+          <h1 className="text-lg font-bold lg:text-2xl">Exulted Eagles</h1>
           {/* Close button */}
           <button onClick={closeMenu}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="w-6 h-6 cursor-pointer"
+              className="size-6 cursor-pointer"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
