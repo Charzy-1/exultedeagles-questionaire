@@ -14,9 +14,12 @@ const AdminPage = () => {
   const [filteredResponses, setFilteredResponses] = useState([]); // State for filtered responses
   const [searchQuery, setSearchQuery] = useState(""); // Search query state
   const [error, setError] = useState("");
-  const [selectedRowIndex, setSelectedRowIndex] = useState(null); // Track selected row
+  const [selectedRowIndex, setSelectedRowIndex] = useState<number | null>(null); // Track selected row
   const [isModalVisible, setIsModalVisible] = useState(false); // Track modal visibility
-  const [responseToDelete, setResponseToDelete] = useState(null); // Track the response to delete
+  const [responseToDelete, setResponseToDelete] = useState<Response | null>(
+    null
+  );
+  // Track the response to delete
 
   useEffect(() => {
     const checkLogin = () => {
@@ -82,7 +85,7 @@ const AdminPage = () => {
     setSelectedRowIndex(index); // Select or unselect the row
   };
 
-  const handleDeleteClick = (response) => {
+  const handleDeleteClick = (response: Response) => {
     setResponseToDelete(response); // Set the response to delete
     setIsModalVisible(true); // Show the modal
   };
