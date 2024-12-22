@@ -19,9 +19,17 @@ export default async function handler(
         .status(200)
         .json({ message: "Response submitted successfully", data: response });
     } catch (error) {
-      res
-        .status(500)
-        .json({ message: "Error saving response", error: error.message });
+      // Type guard to check if error is an instance of Error
+      if (error instanceof Error) {
+        res
+          .status(500)
+          .json({ message: "Error saving response", error: error.message });
+      } else {
+        // Handle the case where the error is not an instance of Error
+        res
+          .status(500)
+          .json({ message: "Unknown error occurred while saving response" });
+      }
     }
   } else {
     res.status(405).json({ message: "Method Not Allowed" });
