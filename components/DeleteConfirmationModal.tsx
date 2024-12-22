@@ -16,6 +16,7 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
   if (!isVisible) return null;
 
   return (
+    // eslint-disable-next-line tailwindcss/migration-from-tailwind-2
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-6">
       <div className="w-96 rounded-lg bg-white p-6 shadow-lg">
         <h2 className="mb-4 text-xl font-bold text-gray-800">

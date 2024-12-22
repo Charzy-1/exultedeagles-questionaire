@@ -17,6 +17,7 @@ export default async function handler(
     let objectId;
     try {
       objectId = new ObjectId(id as string);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       return res.status(400).json({ message: "Invalid ID format" });
     }

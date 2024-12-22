@@ -5,21 +5,29 @@ import AdminLoginModal from "@/components/AdminLoginModal";
 import DeleteConfirmationModal from "@/components/DeleteConfirmationModal"; // Import the modal
 import Navbar from "@/components/Navbar";
 
+import { CustomResponseType } from "../../types/ResponseType";
+
 const AdminPage = () => {
   // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const isCustomResponseType = (
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    response: any
+  ): response is CustomResponseType => {
+    return response && typeof response._id === "string"; // Adjust this check to your needs
+  };
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [responses, setResponses] = useState([]);
-  const [filteredResponses, setFilteredResponses] = useState([]); // State for filtered responses
+  const [responses, setResponses] = useState<CustomResponseType[]>([]);
+  const [filteredResponses, setFilteredResponses] = useState<
+    CustomResponseType[]
+  >([]); // State for filtered responses
   const [searchQuery, setSearchQuery] = useState(""); // Search query state
   const [error, setError] = useState("");
   const [selectedRowIndex, setSelectedRowIndex] = useState<number | null>(null); // Track selected row
   const [isModalVisible, setIsModalVisible] = useState(false); // Track modal visibility
-  const [responseToDelete, setResponseToDelete] = useState<Response | null>(
-    null
-  );
-  // Track the response to delete
+  const [responseToDelete, setResponseToDelete] =
+    useState<CustomResponseType | null>(null);
 
   useEffect(() => {
     const checkLogin = () => {
@@ -85,13 +93,17 @@ const AdminPage = () => {
     setSelectedRowIndex(index); // Select or unselect the row
   };
 
-  const handleDeleteClick = (response: Response) => {
+  const handleDeleteClick = (response: CustomResponseType) => {
     setResponseToDelete(response); // Set the response to delete
     setIsModalVisible(true); // Show the modal
   };
 
   const handleDeleteConfirm = async () => {
     try {
+      if (!responseToDelete) {
+        throw new Error("No response selected to delete");
+      }
+
       // Call the API to delete from the database
       const res = await fetch(`/api/admin/${responseToDelete._id}`, {
         method: "DELETE",
@@ -114,7 +126,11 @@ const AdminPage = () => {
       // Close the modal after successful deletion
       setIsModalVisible(false);
     } catch (err) {
-      setError(err.message); // Handle error
+      if (err instanceof Error) {
+        setError(err.message); // Handle error
+      } else {
+        setError("An unknown error occurred");
+      }
     }
   };
 
@@ -122,16 +138,21 @@ const AdminPage = () => {
     setIsModalVisible(false); // Close the modal without deleting
   };
 
-  const handleSearch = (e) => {
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value.toLowerCase();
     setSearchQuery(query);
 
     if (query === "") {
       setFilteredResponses(responses); // Reset to all responses if search is cleared
     } else {
-      const filtered = responses.filter(
-        (response) => response[1].toLowerCase().includes(query) // Filter by branch name (assumes branch is at index 1)
-      );
+      const filtered = responses.filter((response) => {
+        const branchName = response[1];
+        // Ensure branchName is a string
+        return (
+          typeof branchName === "string" &&
+          branchName.toLowerCase().includes(query)
+        );
+      });
       setFilteredResponses(filtered);
     }
   };
@@ -221,7 +242,11 @@ const AdminPage = () => {
                         <button
                           onClick={(e) => {
                             e.stopPropagation(); // Prevent row click event from firing
-                            handleDeleteClick(response);
+                            if (isCustomResponseType(response)) {
+                              handleDeleteClick(response); // Safe to pass as CustomResponseType
+                            } else {
+                              console.error("Invalid response type");
+                            }
                           }}
                           className="rounded p-1 hover:bg-gray-300"
                         >
