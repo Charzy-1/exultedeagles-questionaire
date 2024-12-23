@@ -18,6 +18,9 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  console.log("Admin Username:", process.env.ADMIN_USERNAME);
+  console.log("Admin Password:", process.env.ADMIN_PASSWORD);
+
   if (req.method === "DELETE") {
     const { id } = req.query;
 
