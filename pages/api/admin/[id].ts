@@ -1,7 +1,18 @@
 import { MongoClient, ObjectId } from "mongodb";
 import { NextApiRequest, NextApiResponse } from "next";
 
-const client = new MongoClient(process.env.MONGODB_URI!);
+let cachedClient: MongoClient | null = null;
+
+async function getClient() {
+  if (cachedClient) {
+    return cachedClient;
+  }
+
+  const client = new MongoClient(process.env.MONGODB_URI!);
+  await client.connect();
+  cachedClient = client;
+  return client;
+}
 
 export default async function handler(
   req: NextApiRequest,
@@ -23,16 +34,14 @@ export default async function handler(
     }
 
     try {
-      await client.connect();
+      const client = await getClient();
       const db = client.db("test");
       const collection = db.collection("responses");
 
       const existingDocument = await collection.findOne({ _id: objectId });
 
       if (!existingDocument) {
-        return res
-          .status(404)
-          .json({ message: "Response not found in database" });
+        return res.status(404).json({ message: "Response not found" });
       }
 
       const result = await collection.deleteOne({ _id: objectId });
@@ -46,8 +55,6 @@ export default async function handler(
       return res
         .status(500)
         .json({ message: "Failed to delete response", error });
-    } finally {
-      await client.close();
     }
   } else {
     return res.status(405).json({ message: "Method Not Allowed" });

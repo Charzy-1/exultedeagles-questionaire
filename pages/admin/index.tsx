@@ -62,7 +62,7 @@ const AdminPage = () => {
 
   const fetchResponses = async () => {
     try {
-      const res = await fetch("/api/admin");
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin`);
       if (!res.ok) {
         throw new Error("Failed to fetch responses");
       }
@@ -105,9 +105,12 @@ const AdminPage = () => {
       }
 
       // Call the API to delete from the database
-      const res = await fetch(`/api/admin/${responseToDelete._id}`, {
-        method: "DELETE",
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/admin/${responseToDelete._id}`,
+        {
+          method: "DELETE",
+        }
+      );
 
       if (!res.ok) {
         throw new Error("Failed to delete response");
