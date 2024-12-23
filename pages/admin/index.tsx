@@ -104,7 +104,7 @@ const AdminPage = () => {
         throw new Error("No response selected to delete");
       }
 
-      // Call the API to delete from the database
+      // Call the API to delete from the database to fetch response
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/admin/${responseToDelete._id}`,
         {
