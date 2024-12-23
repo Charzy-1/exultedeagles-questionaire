@@ -18,8 +18,8 @@ const AdminLoginModal: React.FC<AdminLoginModalProps> = ({
     e.preventDefault();
     setError("");
 
-    const adminUsername = process.env.NEXT_PUBLIC_ADMIN_USERNAME;
-    const adminPassword = process.env.NEXT_PUBLIC_ADMIN_PASSWORD;
+    const adminUsername = process.env.ADMIN_USERNAME;
+    const adminPassword = process.env.ADMIN_PASSWORD;
 
     if (username === adminUsername && password === adminPassword) {
       localStorage.setItem("adminLoggedIn", "true");
