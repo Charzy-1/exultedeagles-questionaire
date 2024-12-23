@@ -18,12 +18,16 @@ This project is a customised dynamic survey form for EXULTED EAGLES TECHNICAL SE
 - **Chart Analysis**: Provides graphical insights into survey data.
 - **Logout Option**: Securely logs out the admin.
 
-## Technologies Used
+## Tech Stack
 
-- **Frontend**: Next.js (React-based framework), Tailwind CSS for styling.
-- **Backend**: Node.js API routes.
-- **Database**: MongoDB for storing user responses.
-- **Authentication**: Simple localStorage-based login for admin access.
+- **Frontend**:
+
+  - [Next.js](https://nextjs.org/) - A React-based framework.
+  - [Tailwind CSS](https://tailwindcss.com/) - Utility-first CSS framework for styling.
+
+- **Backend**:
+  - [Node.js](https://nodejs.org/) - JavaScript runtime for server-side operations.
+  - [MongoDB](https://www.mongodb.com/) - NoSQL database for data persistence.
 
 ## Installation
 
