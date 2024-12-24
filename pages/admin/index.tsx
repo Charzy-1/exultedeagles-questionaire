@@ -204,10 +204,10 @@ const AdminPage = () => {
         </div>
       </div>
 
-      <div className="mx-auto max-w-4xl">
+      <div className="mx-auto max-w-full">
         <div className="overflow-x-auto">
-          <div className="rounded-lg bg-white shadow-lg">
-            <table className="w-full table-auto border-collapse">
+          <div className="w-full rounded-lg bg-white shadow-lg">
+            <table className="min-w-full table-auto border-collapse">
               <thead>
                 <tr className="bg-gray-300">
                   <th className="px-4 py-2 text-left text-gray-800">S/n</th>
@@ -269,6 +269,7 @@ const AdminPage = () => {
           </div>
         </div>
       </div>
+
       <div className="mt-6 flex justify-end">
         <button
           onClick={handleLogout}

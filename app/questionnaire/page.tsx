@@ -149,13 +149,34 @@ const Page = () => {
               )}
             </div>
           )}
+
+          {question.type === "dropdown" && (
+            <select
+              className="w-full rounded border p-2"
+              onChange={(e) => handleChange(question.id, e.target.value)}
+              defaultValue=""
+            >
+              <option value="" disabled>
+                Select an option
+              </option>
+              {question.options?.map((option) => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
+          )}
         </div>
       ))}
 
       <button
         type="submit"
         disabled={!isFormValid}
-        className={`${!isFormValid ? "cursor-not-allowed bg-gray-400" : "bg-gradient-to-r from-red-400 to-red-800"} mt-6 rounded px-4 py-3 font-bold text-white shadow-xl hover:bg-yellow-400 hover:bg-none hover:text-black`}
+        className={`${
+          !isFormValid
+            ? "cursor-not-allowed bg-gray-400"
+            : "bg-gradient-to-r from-red-400 to-red-800"
+        } mt-6 rounded px-4 py-3 font-bold text-white shadow-xl hover:bg-yellow-400 hover:bg-none hover:text-black`}
       >
         Submit
       </button>
