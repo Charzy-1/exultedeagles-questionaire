@@ -13,7 +13,25 @@ const Page = () => {
     {}
   );
   const [formSubmitted, setFormSubmitted] = useState(false); // Track form submission
+  const [hasIPSubmitted, setHasIPSubmitted] = useState(false); // Track if IP has submitted
   const router = useRouter();
+
+  useEffect(() => {
+    const checkIPSubmission = async () => {
+      try {
+        const response = await fetch("/api/check-ip");
+        const data = await response.json();
+        if (data.hasSubmitted) {
+          setHasIPSubmitted(true); // Update state if IP has already submitted
+          router.push("/thank-you"); // Redirect to thank-you page
+        }
+      } catch (error) {
+        console.error("Error checking IP submission:", error);
+      }
+    };
+
+    checkIPSubmission();
+  }, [router]);
 
   useEffect(() => {
     if (formSubmitted) {
@@ -100,7 +118,9 @@ const Page = () => {
     return response && response !== "";
   });
 
-  return (
+  return hasIPSubmitted ? (
+    <div>You have already submitted your feedback from this IP address.</div>
+  ) : (
     <form className="mt-14 space-y-4 p-8 lg:p-16" onSubmit={handleSubmit}>
       {questions.map((question) => (
         <div key={question.id}>
