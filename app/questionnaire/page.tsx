@@ -87,13 +87,16 @@ const Page = () => {
   // Updated form validation logic
   const isFormValid = questions.every((question) => {
     const response = responses[question.id];
+
     if (question.type === "checkbox") {
       return Array.isArray(response) && response.length > 0;
     }
+
     if (question.type === "dropdown" || question.type === "radio") {
       // Ensure non-empty responses for dropdown and radio questions
-      return response && response.trim() !== "";
+      return typeof response === "string" && response.trim() !== "";
     }
+
     return response && response !== "";
   });
 
@@ -101,7 +104,9 @@ const Page = () => {
     <form className="mt-14 space-y-4 p-8 lg:p-16" onSubmit={handleSubmit}>
       {questions.map((question) => (
         <div key={question.id}>
-          <label className="block text-lg font-medium">{question.text}</label>
+          <label className="mb-4 block text-lg font-bold text-red-500">
+            {question.text}
+          </label>
 
           {question.type === "text" && (
             <input
