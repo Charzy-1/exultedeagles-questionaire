@@ -170,7 +170,7 @@ const AdminPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 px-10 py-32 lg:px-80">
+    <div className="min-h-screen bg-white px-10 py-32 lg:px-80">
       <Navbar />
       <h1 className="mb-6 text-center text-3xl font-bold text-gray-800">
         Admin Dashboard
@@ -206,7 +206,7 @@ const AdminPage = () => {
 
       <div className="mx-auto max-w-full">
         <div className="overflow-x-auto">
-          <div className="w-full rounded-lg bg-white shadow-lg">
+          <div className="w-full rounded-lg bg-white">
             <table className="min-w-full table-auto border-collapse">
               <thead>
                 <tr className="bg-gray-300">
