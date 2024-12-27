@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { questions } from "@/constants/questions";
 
@@ -12,17 +12,20 @@ const Page = () => {
   const [otherResponses, setOtherResponses] = useState<Record<number, string>>(
     {}
   );
+  const [formSubmitted, setFormSubmitted] = useState(false); // Track form submission
   const router = useRouter();
 
-  const handleChange = (id: number, value: string) => {
-    if (id === 1) {
-      const regex = /^[A-Za-z\s]*$/;
-      if (regex.test(value) || value === "") {
-        setResponses({ ...responses, [id]: value });
-      }
-    } else {
-      setResponses({ ...responses, [id]: value });
+  useEffect(() => {
+    if (formSubmitted) {
+      setResponses({});
+      setOtherResponses({});
+      setFormSubmitted(false);
     }
+  }, [formSubmitted]);
+
+  const handleChange = (id: number, value: string) => {
+    console.log(`Selected value for question ${id}:`, value); // Debugging
+    setResponses({ ...responses, [id]: value });
   };
 
   const handleCheckboxChange = (id: number, option: string) => {
@@ -74,17 +77,22 @@ const Page = () => {
         throw new Error("Failed to submit the form");
       }
 
-      // Redirect after successful submission
+      setFormSubmitted(true); // Mark the form as submitted
       router.push("/thank-you");
     } catch (error) {
       console.error("Error submitting the form:", error);
     }
   };
 
+  // Updated form validation logic
   const isFormValid = questions.every((question) => {
     const response = responses[question.id];
     if (question.type === "checkbox") {
       return Array.isArray(response) && response.length > 0;
+    }
+    if (question.type === "dropdown" || question.type === "radio") {
+      // Ensure non-empty responses for dropdown and radio questions
+      return response && response.trim() !== "";
     }
     return response && response !== "";
   });
@@ -150,15 +158,14 @@ const Page = () => {
             </div>
           )}
 
+          {/* Dropdown question type */}
           {question.type === "dropdown" && (
             <select
-              className="w-full rounded border p-2"
+              name={`question-${question.id}`}
+              className="w-full rounded border-b-2 border-gray-400 p-2 outline-none hover:border-black"
               onChange={(e) => handleChange(question.id, e.target.value)}
-              defaultValue=""
             >
-              <option value="" disabled>
-                Select an option
-              </option>
+              <option value="">Select an option</option>
               {question.options?.map((option) => (
                 <option key={option} value={option}>
                   {option}
@@ -172,11 +179,7 @@ const Page = () => {
       <button
         type="submit"
         disabled={!isFormValid}
-        className={`${
-          !isFormValid
-            ? "cursor-not-allowed bg-gray-400"
-            : "bg-gradient-to-r from-red-400 to-red-800"
-        } mt-6 rounded px-4 py-3 font-bold text-white shadow-xl hover:bg-yellow-400 hover:bg-none hover:text-black`}
+        className={`${!isFormValid ? "cursor-not-allowed bg-gray-400" : "bg-gradient-to-r from-red-400 to-red-800"} mt-6 rounded px-4 py-3 font-bold text-white shadow-xl hover:bg-yellow-400 hover:bg-none hover:text-black`}
       >
         Submit
       </button>
