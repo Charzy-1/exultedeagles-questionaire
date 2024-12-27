@@ -19,7 +19,7 @@ const Page = () => {
   useEffect(() => {
     const checkIPSubmission = async () => {
       try {
-        const response = await fetch("/api/check-ip");
+        const response = await fetch("/api/check-submission");
         const data = await response.json();
         if (data.hasSubmitted) {
           setHasIPSubmitted(true); // Update state if IP has already submitted
