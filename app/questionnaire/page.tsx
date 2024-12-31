@@ -12,37 +12,22 @@ const Page = () => {
   const [otherResponses, setOtherResponses] = useState<Record<number, string>>(
     {}
   );
+  // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
   const [formSubmitted, setFormSubmitted] = useState(false); // Track form submission
   const [hasIPSubmitted, setHasIPSubmitted] = useState(false); // Track if IP has submitted
   const router = useRouter();
 
   useEffect(() => {
-    const checkIPSubmission = async () => {
-      try {
-        const response = await fetch("/api/check-submission");
-        const data = await response.json();
-        if (data.hasSubmitted) {
-          setHasIPSubmitted(true); // Update state if IP has already submitted
-          router.push("/thank-you"); // Redirect to thank-you page
-        }
-      } catch (error) {
-        console.error("Error checking IP submission:", error);
-      }
-    };
+    // Check if the submission flag exists in localStorage
+    const hasSubmitted = localStorage.getItem("hasSubmitted");
 
-    checkIPSubmission();
+    if (hasSubmitted) {
+      setHasIPSubmitted(true); // Set state if the user has submitted already
+      router.push("/response-submitted"); // Redirect to thank-you page
+    }
   }, [router]);
 
-  useEffect(() => {
-    if (formSubmitted) {
-      setResponses({});
-      setOtherResponses({});
-      setFormSubmitted(false);
-    }
-  }, [formSubmitted]);
-
   const handleChange = (id: number, value: string) => {
-    console.log(`Selected value for question ${id}:`, value); // Debugging
     setResponses({ ...responses, [id]: value });
   };
 
@@ -71,7 +56,6 @@ const Page = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Include "Other" responses in the final responses
     const finalResponses = { ...responses };
     Object.keys(otherResponses).forEach((id) => {
       if (responses[Number(id)]?.includes("Other (please specify)")) {
@@ -88,21 +72,23 @@ const Page = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(finalResponses), // Send the final responses directly
+        body: JSON.stringify(finalResponses),
       });
 
       if (!response.ok) {
         throw new Error("Failed to submit the form");
       }
 
-      setFormSubmitted(true); // Mark the form as submitted
+      // Save the submission flag in localStorage
+      localStorage.setItem("hasSubmitted", "true");
+
+      setFormSubmitted(true);
       router.push("/thank-you");
     } catch (error) {
       console.error("Error submitting the form:", error);
     }
   };
 
-  // Updated form validation logic
   const isFormValid = questions.every((question) => {
     const response = responses[question.id];
 
@@ -111,16 +97,20 @@ const Page = () => {
     }
 
     if (question.type === "dropdown" || question.type === "radio") {
-      // Ensure non-empty responses for dropdown and radio questions
       return typeof response === "string" && response.trim() !== "";
     }
 
     return response && response !== "";
   });
 
-  return hasIPSubmitted ? (
-    <div>You have already submitted your feedback from this IP address.</div>
-  ) : (
+  // Render a message if IP has already submitted
+  if (hasIPSubmitted) {
+    return (
+      <div>You have already submitted your feedback from this device.</div>
+    );
+  }
+
+  return (
     <form className="mt-14 space-y-4 p-8 lg:p-16" onSubmit={handleSubmit}>
       {questions.map((question) => (
         <div key={question.id}>
@@ -183,7 +173,6 @@ const Page = () => {
             </div>
           )}
 
-          {/* Dropdown question type */}
           {question.type === "dropdown" && (
             <select
               name={`question-${question.id}`}
